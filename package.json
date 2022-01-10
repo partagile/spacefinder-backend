@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/partagile/spacefinder-backend#readme",
   "devDependencies": {
+    "@types/node": "^15.14.9",
     "aws-cdk": "^2.5.0",
     "aws-cdk-lib": "^2.5.0",
     "constructs": "^10.0.29",

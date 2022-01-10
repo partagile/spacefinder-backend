@@ -1,0 +1,5 @@
+@endpoint = https://qoe8b3qb2k.execute-api.us-west-2.amazonaws.com/prod
+
+GET {{endpoint}}/hello/
+###
+
