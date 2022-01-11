@@ -13,9 +13,8 @@ async function handler(
         body: 'Salut! Bonjour from Dynamodb'
     }
 
-    const item = {
-        spaceId: v4()
-    }
+    const item = typeof event.body == 'object'? event.body: JSON.parse(event.body);
+    item.spaceId = v4();
     
     try {
         await dbClient.put({
@@ -26,6 +25,7 @@ async function handler(
         const error = e as Error;
         result.body = error.message;
     }
+    result.body = JSON.stringify(`New item created with id: ${item.spaceId}`)
 
     return result
 }
