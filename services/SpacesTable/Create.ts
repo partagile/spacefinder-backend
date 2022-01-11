@@ -16,14 +16,15 @@ async function handler(
     const item = {
         spaceId: v4()
     }
-
+    
     try {
         await dbClient.put({
             TableName: 'SpacesTable',
             Item: item
         }).promise()
-    } catch (error) {
-        //result.body = error.message
+    } catch (e: unknown) {
+        const error = e as Error;
+        result.body = error.message;
     }
 
     return result
