@@ -15,7 +15,8 @@ export class SpaceStack extends Stack {
         tableName: 'SpacesTable',
         primaryKey: 'spaceId',
         createLambdaPath: 'Create',
-        readLambdaPath: 'Read'
+        readLambdaPath: 'Read',
+        secondaryIndexes: ['location']
     })
 
     constructor(scope: Construct, id: string, props: StackProps) {
