@@ -1,7 +1,8 @@
-import { handler } from '../../services/SpacesTable/Read';
+import { handler } from '../../services/SpacesTable/Create';
 
 const event = {
     body: {
+        name: 'NHSC 110 LT',
         location: 'Prince George'
     }
 }

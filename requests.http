@@ -33,6 +33,26 @@ Content-Type: application/json
 }
 ###
 
+//POST - to test input validation; missing name
+POST {{endpoint}}/spaces/
+Content-Type: application/json
+
+{
+    "location": "Victoria",
+    "field1": "Additional data field"
+}
+###
+
+//POST - to test input validation; missing location
+POST {{endpoint}}/spaces/
+Content-Type: application/json
+
+{
+    "name": "NHSC 110 LT",
+    "field1": "Additional data field"
+}
+###
+
 //DELETE - removes item with ?spaceId
 DELETE {{endpoint}}/spaces?spaceId=56d22688-7523-4ff5-9b03-1fd26a4aaae2
 ###
