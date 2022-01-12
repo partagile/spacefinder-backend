@@ -28,10 +28,8 @@ async function handler(
         }
     } catch (error) {
         result.body = error.message;
-        
+
     }
-
-
 
     return result
 }

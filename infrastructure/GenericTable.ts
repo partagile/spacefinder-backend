@@ -3,8 +3,6 @@ import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway'
 import { join } from 'path'
-import { handler } from '../cdk.out/asset.c394d734d44689659a578c0811d1888df27da8ab4b529ac3f10810291b4b6038/node-lambda/hello';
-
 
 export interface TableProps {
     tableName: string,
@@ -32,20 +30,20 @@ export class GenericTable {
     public updateLambdaIntegration: LambdaIntegration;
     public deleteLambdaIntegration: LambdaIntegration;
 
-    public constructor(stack: Stack, props: TableProps){
+    public constructor(stack: Stack, props: TableProps) {
         this.stack = stack;
         this.props = props;
         this.initialize();
     }
 
-    private initialize(){
+    private initialize() {
         this.createTable();
         this.addSecondaryIndexes();
         this.createLambdas();
         this.grantTableRights();
     }
 
-    private createTable(){
+    private createTable() {
         this.table = new Table(this.stack, this.props.tableName, {
             partitionKey: {
                 name: this.props.primaryKey,
@@ -55,7 +53,7 @@ export class GenericTable {
         })
     }
 
-    private addSecondaryIndexes(){
+    private addSecondaryIndexes() {
         if (this.props.secondaryIndexes) {
             for (const secondaryIndex of this.props.secondaryIndexes) {
                 this.table.addGlobalSecondaryIndex({
@@ -69,7 +67,7 @@ export class GenericTable {
         }
     }
 
-    private createLambdas(){
+    private createLambdas() {
         if (this.props.createLambdaPath) {
             this.createLambda = this.createSingleLambda(this.props.createLambdaPath)
             this.createLambdaIntegration = new LambdaIntegration(this.createLambda)
@@ -88,7 +86,7 @@ export class GenericTable {
         }
     }
 
-    private grantTableRights(){
+    private grantTableRights() {
         if (this.createLambda) {
             this.table.grantWriteData(this.createLambda)
         }
@@ -103,7 +101,7 @@ export class GenericTable {
         }
     }
 
-    private createSingleLambda(lambdaName: string): NodejsFunction{
+    private createSingleLambda(lambdaName: string): NodejsFunction {
         const lambdaId = `${this.props.tableName}-${lambdaName}`
         return new NodejsFunction(this.stack, lambdaId, {
             entry: (join(__dirname, '..', 'services', this.props.tableName, `${lambdaName}.ts`)),

@@ -23,7 +23,7 @@ async function handler(
                 result.body = await queryWithSecondaryPartitionKey(event.queryStringParameters);
             }
         } else {
-          result.body = await scanTable();
+            result.body = await scanTable();
         }
 
     } catch (error) {
@@ -44,7 +44,7 @@ async function queryWithSecondaryPartitionKey(queryParams: APIGatewayProxyEventQ
         },
         ExpressionAttributeValues: {
             ':expressionValue1': queryValue
-        }        
+        }
     }).promise();
     return JSON.stringify(queryResponse.Items);
 }
@@ -53,7 +53,7 @@ async function scanTable() {
     const queryResponse = await dbClient.scan({
         TableName: TABLE_NAME!
     }).promise()
-    return JSON.stringify(queryResponse.Items)  
+    return JSON.stringify(queryResponse.Items)
 }
 
 async function queryWithPrimaryPartitionKey(queryParams: APIGatewayProxyEventQueryStringParameters) {
