@@ -14,29 +14,16 @@ async function handler(
         body: 'Salut! Bonjour from Dynamodb'
     }
 
-    const requestBody = typeof event.body == 'object'? event.body: JSON.parse(event.body);
     const spaceId = event.queryStringParameters?.[PRIMARY_KEY]
 
-    if (requestBody && spaceId) {
-        const requestBodyKey = Object.keys(requestBody)[0];
-        const requestBodyValue = requestBody[requestBodyKey];
-
-        const updateResult = await dbClient.update({
+    if (spaceId) {
+        const deleteResult = await dbClient.delete({
             TableName: TABLE_NAME,
             Key: {
                 [PRIMARY_KEY]: spaceId
-            },
-            UpdateExpression: 'set #expressionUpdate1 = :expressionValue1',
-            ExpressionAttributeValues: {
-                ':expressionValue1': requestBodyValue
-            },
-            ExpressionAttributeNames: {
-                '#expressionUpdate1': requestBodyKey
-            },
-            ReturnValues: 'UPDATED_NEW'
+            }
         }).promise();
-
-        result.body = JSON.stringify(updateResult)
+        result.body = JSON.stringify(deleteResult);
     }
 
     return result

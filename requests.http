@@ -33,3 +33,6 @@ Content-Type: application/json
 }
 ###
 
+//DELETE - removes item with ?spaceId
+DELETE {{endpoint}}/spaces?spaceId=56d22688-7523-4ff5-9b03-1fd26a4aaae2
+###
