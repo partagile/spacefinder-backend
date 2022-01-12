@@ -14,17 +14,24 @@ async function handler(
         body: 'Salut! Bonjour from Dynamodb'
     }
 
-    const spaceId = event.queryStringParameters?.[PRIMARY_KEY]
+    try {
+        const spaceId = event.queryStringParameters?.[PRIMARY_KEY]
 
-    if (spaceId) {
-        const deleteResult = await dbClient.delete({
-            TableName: TABLE_NAME,
-            Key: {
-                [PRIMARY_KEY]: spaceId
-            }
-        }).promise();
-        result.body = JSON.stringify(deleteResult);
+        if (spaceId) {
+            const deleteResult = await dbClient.delete({
+                TableName: TABLE_NAME,
+                Key: {
+                    [PRIMARY_KEY]: spaceId
+                }
+            }).promise();
+            result.body = JSON.stringify(deleteResult);
+        }
+    } catch (error) {
+        result.body = error.message;
+        
     }
+
+
 
     return result
 }

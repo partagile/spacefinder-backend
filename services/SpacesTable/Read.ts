@@ -26,8 +26,7 @@ async function handler(
           result.body = await scanTable();
         }
 
-    } catch (e: unknown) {
-        const error = e as Error;
+    } catch (error) {
         result.body = error.message;
     }
     return result

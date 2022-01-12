@@ -1,7 +1,7 @@
 import { DynamoDB } from "aws-sdk";
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda";
 import { MissingFieldError, validateSpaceEntry } from '../Shared/InputValidator'
-import { v4 } from 'uuid'
+import { generateRandomId, getEventBody } from '../Shared/Utils'
 
 const dbClient = new DynamoDB.DocumentClient();
 const TABLE_NAME = process.env.TABLE_NAME
@@ -14,10 +14,10 @@ async function handler(
         statusCode: 200,
         body: 'Salut! Bonjour from Dynamodb'
     }
-    
+
     try {
-        const item = typeof event.body == 'object'? event.body: JSON.parse(event.body);
-        item.spaceId = v4();
+        const item = getEventBody(event);
+        item.spaceId = generateRandomId();
         validateSpaceEntry(item);
 
         await dbClient.put({
@@ -33,11 +33,8 @@ async function handler(
         } else {
             result.statusCode = 500;
         }
-        
         result.body = error.message;
     }
-
-
     return result
 }
 
