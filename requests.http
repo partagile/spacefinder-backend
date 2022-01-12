@@ -1,14 +1,28 @@
 @endpoint = https://qoe8b3qb2k.execute-api.us-west-2.amazonaws.com/prod
 
-GET {{endpoint}}/hello/
+// GET - all spaces
+GET {{endpoint}}/spaces/
 ###
 
+//GET - space with ID: 8bd4a9e4-380a-4b83-bf74-90d3d22d9409
 GET {{endpoint}}/spaces?spaceId=8bd4a9e4-380a-4b83-bf74-90d3d22d9409
 ###
 
+//GET - spaces in ?location=Victoria
 GET {{endpoint}}/spaces?location=Victoria
 ###
 
+//PUT - update space with new details
+PUT {{endpoint}}/spaces?spaceId=8bd4a9e4-380a-4b83-bf74-90d3d22d9409
+Content-Type: application/json
+
+{
+    "location": "Vancouver",
+    "field1": "VFMP details"
+}
+###
+
+//POST - create a new space with the following details
 POST {{endpoint}}/spaces/
 Content-Type: application/json
 
