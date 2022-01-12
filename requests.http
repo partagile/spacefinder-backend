@@ -4,8 +4,8 @@
 GET {{endpoint}}/spaces/
 ###
 
-//GET - space with ID: 8bd4a9e4-380a-4b83-bf74-90d3d22d9409
-GET {{endpoint}}/spaces?spaceId=8bd4a9e4-380a-4b83-bf74-90d3d22d9409
+//GET - space with ID: uoueyxzbnf
+GET {{endpoint}}/spaces?spaceId=uoueyxzbnf
 ###
 
 //GET - spaces in ?location=Victoria
@@ -13,7 +13,7 @@ GET {{endpoint}}/spaces?location=Victoria
 ###
 
 //PUT - update space with new details
-PUT {{endpoint}}/spaces?spaceId=8bd4a9e4-380a-4b83-bf74-90d3d22d9409
+PUT {{endpoint}}/spaces?spaceId=tif75kxfjqb
 Content-Type: application/json
 
 {
@@ -28,7 +28,7 @@ Content-Type: application/json
 
 {
     "location": "Victoria",
-    "name": "MSB 160",
+    "name": "MSB 230",
     "field1": "Additional data field"
 }
 ###
@@ -54,5 +54,5 @@ Content-Type: application/json
 ###
 
 //DELETE - removes item with ?spaceId
-DELETE {{endpoint}}/spaces?spaceId=56d22688-7523-4ff5-9b03-1fd26a4aaae2
+DELETE {{endpoint}}/spaces?spaceId=5ho5sg3jsox
 ###
