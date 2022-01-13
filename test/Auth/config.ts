@@ -3,8 +3,8 @@
 
 export const config = {
     REGION: 'us-west-2',
-    USER_POOL_ID: 'us-west-2_AcbfuRm7L',
-    APP_CLIENT_ID: '7t6kd6lplr73273k0oesq8gd7t',
+    USER_POOL_ID: 'us-west-2_fBM44XXy9',
+    APP_CLIENT_ID: '5psn11jv28hloisnss1opcne6u',
     TEST_USER_NAME: 'hello',
     TEST_USER_PASSWORD: '5EApCsq&'
 }
