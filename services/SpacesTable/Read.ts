@@ -11,25 +11,49 @@ async function handler(
 ): Promise<APIGatewayProxyResult> {
     const result: APIGatewayProxyResult = {
         statusCode: 200,
-        body: 'Salut! Bonjour from Dynamodb'
+        body: ''
     }
-
-    try {
-        if (event.queryStringParameters) {
-            if (PRIMARY_KEY! in event.queryStringParameters) {
-                result.body = await queryWithPrimaryPartitionKey(event.queryStringParameters)
+    
+    if (isAuthorized(event)) {
+        try {
+            if (event.queryStringParameters) {
+                if (PRIMARY_KEY! in event.queryStringParameters) {
+                    result.body = await queryWithPrimaryPartitionKey(event.queryStringParameters)
+                }
+                else {
+                    result.body = await queryWithSecondaryPartitionKey(event.queryStringParameters);
+                }
+            } else {
+                result.body = await scanTable();
             }
-            else {
-                result.body = await queryWithSecondaryPartitionKey(event.queryStringParameters);
-            }
-        } else {
-            result.body = await scanTable();
+    
+        } catch (error) {
+            result.body = error.message;
         }
-
-    } catch (error) {
-        result.body = error.message;
+    } else {
+        return {
+            statusCode: 401,
+            body: JSON.stringify('Unauthorized')
+        }
     }
+
+
     return result
+}
+
+async function queryWithPrimaryPartitionKey(queryParams: APIGatewayProxyEventQueryStringParameters) {
+    const keyParam = queryParams[PRIMARY_KEY!];
+    const queryResponse = await dbClient.query({
+        TableName: TABLE_NAME!,
+        KeyConditionExpression: '#expression1 = :expressionValue1',
+        ExpressionAttributeNames: {
+            '#expression1': PRIMARY_KEY!
+        },
+        ExpressionAttributeValues: {
+            ':expressionValue1': keyParam
+        }
+    }).promise();
+    return JSON.stringify(queryResponse.Items)
 }
 
 async function queryWithSecondaryPartitionKey(queryParams: APIGatewayProxyEventQueryStringParameters) {
@@ -56,19 +80,13 @@ async function scanTable() {
     return JSON.stringify(queryResponse.Items)
 }
 
-async function queryWithPrimaryPartitionKey(queryParams: APIGatewayProxyEventQueryStringParameters) {
-    const keyParam = queryParams[PRIMARY_KEY!];
-    const queryResponse = await dbClient.query({
-        TableName: TABLE_NAME!,
-        KeyConditionExpression: '#expression1 = :expressionValue1',
-        ExpressionAttributeNames: {
-            '#expression1': PRIMARY_KEY!
-        },
-        ExpressionAttributeValues: {
-            ':expressionValue1': keyParam
-        }
-    }).promise();
-    return JSON.stringify(queryResponse.Items)
+function isAuthorized(event: APIGatewayProxyEvent){
+    const groups = event.requestContext.authorizer?.claims['cognito:groups'];
+    if (groups) {
+        return (groups as string).includes('admins')
+    } else {
+        return false
+    }
 }
 
 export { handler };
