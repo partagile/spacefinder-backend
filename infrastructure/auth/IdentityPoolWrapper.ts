@@ -1,12 +1,12 @@
 import { CfnOutput } from "aws-cdk-lib";
-import { UserPool, UserPoolClient, CfnIdentityPool } from "aws-cdk-lib/aws-cognito";
-import { FederatedPrincipal, Role } from "aws-cdk-lib/aws-iam";
+import { UserPool, UserPoolClient, CfnIdentityPool, CfnIdentityPoolRoleAttachment } from "aws-cdk-lib/aws-cognito";
+import { Effect, FederatedPrincipal, PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import { config } from "process";
 
 
 
-export class IdentityPoolWrapper{
+export class IdentityPoolWrapper {
 
     private scope: Construct;
     private userPool: UserPool;
@@ -15,20 +15,22 @@ export class IdentityPoolWrapper{
     private identityPool: CfnIdentityPool;
     private authenticatedRole: Role;
     private unauthenticatedRole: Role;
+    public adminRole: Role;
 
-    constructor (scope: Construct, userPool: UserPool, userPoolClient: UserPoolClient){
+    constructor(scope: Construct, userPool: UserPool, userPoolClient: UserPoolClient) {
         this.scope = scope;
         this.userPool = userPool;
         this.userPoolClient = userPoolClient;
         this.initialize();
     }
 
-    private initialize(){
+    private initialize() {
         this.initializeIdentityPool();
-        this.initializeRoles;
+        this.initializeRoles();
+        this.attachRoles();
     }
 
-    private initializeIdentityPool(){
+    private initializeIdentityPool() {
         this.identityPool = new CfnIdentityPool(this.scope, 'SpaceFinderIdentityPool', {
             allowUnauthenticatedIdentities: true,
             cognitoIdentityProviders: [{
@@ -43,7 +45,7 @@ export class IdentityPoolWrapper{
 
     }
 
-    private initializeRoles(){
+    private initializeRoles() {
         this.authenticatedRole = new Role(this.scope, 'CognitoDefaultAuthenticatedRole', {
             assumedBy: new FederatedPrincipal('cognito-identity.amazonaws.com', {
                 StringEquals: {
@@ -53,10 +55,65 @@ export class IdentityPoolWrapper{
                     'cognito-identity.amazonaws.com:aud': 'authenticated'
                 }
             },
-            'sts:AssumeRoleWithWebIdentity'
+                'sts:AssumeRoleWithWebIdentity'
             )
 
         });
+
+        this.unauthenticatedRole = new Role(this.scope, 'CognitoDefaultUnAuthenticatedRole', {
+            assumedBy: new FederatedPrincipal('cognito-identity.amazonaws.com', {
+                StringEquals: {
+                    'cognito-identity.amazonaws.com:aud': this.identityPool.ref
+                },
+                'ForAnyValue:StringLike': {
+                    'cognito-identity.amazonaws.com:aud': 'unauthenticated'
+                }
+            },
+                'sts:AssumeRoleWithWebIdentity'
+            )
+
+        });    
+        
+        this.adminRole = new Role(this.scope, 'CognitoAdminRole', {
+            assumedBy: new FederatedPrincipal('cognito-identity.amazonaws.com', {
+                StringEquals: {
+                    'cognito-identity.amazonaws.com:aud': this.identityPool.ref
+                },
+                'ForAnyValue:StringLike': {
+                    'cognito-identity.amazonaws.com:aud': 'authenticated'
+                }
+            },
+                'sts:AssumeRoleWithWebIdentity'
+            )
+
+        }); 
+        
+        this.adminRole.addToPolicy(new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+                's3:ListAllMyBuckets'
+            ],
+            resources: ['*']            
+            
+        }))
+    }
+
+    private attachRoles(){
+        new CfnIdentityPoolRoleAttachment(this.scope, 'RoleAttachments', {
+            identityPoolId: this.identityPool.ref,
+            roles: {
+                'authenticated': this.authenticatedRole.roleArn,
+                'unauthenticated': this.unauthenticatedRole.roleArn
+            },
+            roleMappings: {
+                mapAdminsRole: {
+                    type: 'Token',
+                    ambiguousRoleResolution: 'AuthenticatedRole',
+                    identityProvider: `${this.userPool.userPoolProviderName}:${this.userPoolClient.userPoolClientId}`
+                }
+            }
+
+        })
     }
 
 }
