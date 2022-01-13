@@ -1,11 +1,15 @@
 import { Stack, StackProps } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
-import { /*LambdaIntegration,*/ RestApi } from 'aws-cdk-lib/aws-apigateway'
+import {  RestApi } from 'aws-cdk-lib/aws-apigateway'
 import { GenericTable } from './GenericTable'
+import { AuthorizerWrapper } from './auth/AuthorizerWrapper'
 
 export class SpaceStack extends Stack {
 
-    private api = new RestApi(this, 'SpaceApi')
+    private api = new RestApi(this, 'SpaceApi');
+    private authorizer: AuthorizerWrapper;
+
+
     private spacesTable = new GenericTable(this, {
         tableName: 'SpacesTable',
         primaryKey: 'spaceId',
@@ -18,6 +22,8 @@ export class SpaceStack extends Stack {
 
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props)
+
+        this.authorizer = new AuthorizerWrapper(this, this.api);
         
         //spaces API integrations
         const spaceResource = this.api.root.addResource('spaces');
