@@ -26,9 +26,12 @@ export class SpaceStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props)
 
-        this.authorizer = new AuthorizerWrapper(this, this.api);
         this.initializeSuffix();
         this.initializeSpacesPhotosBucket();
+        this.authorizer = new AuthorizerWrapper(
+            this, 
+            this.api,
+            this.photosBucket.bucketArn + '/*');
 
         const optionsAuthorizer: MethodOptions = {
             authorizationType: AuthorizationType.COGNITO,
