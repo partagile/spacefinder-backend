@@ -1,5 +1,6 @@
 import { DynamoDB } from "aws-sdk";
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda";
+import { addCorsHeader } from "../Shared/Utils";
 
 const dbClient = new DynamoDB.DocumentClient();
 const TABLE_NAME = process.env.TABLE_NAME as string;
@@ -14,6 +15,7 @@ async function handler(
         body: 'Salut! Bonjour from Dynamodb'
     }
 
+    addCorsHeader(result);
     try {
         const spaceId = event.queryStringParameters?.[PRIMARY_KEY]
 

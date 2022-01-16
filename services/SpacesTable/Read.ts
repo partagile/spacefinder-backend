@@ -1,5 +1,6 @@
 import { DynamoDB } from "aws-sdk";
 import { APIGatewayProxyEvent, APIGatewayProxyEventQueryStringParameters, APIGatewayProxyResult, Context } from "aws-lambda";
+import { addCorsHeader } from "../Shared/Utils";
 
 const dbClient = new DynamoDB.DocumentClient();
 const TABLE_NAME = process.env.TABLE_NAME;
@@ -13,7 +14,8 @@ async function handler(
         statusCode: 200,
         body: ''
     }
-    
+    addCorsHeader(result);
+
     if (isAuthorized(event)) {
         try {
             if (event.queryStringParameters) {

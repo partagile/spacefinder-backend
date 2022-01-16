@@ -1,7 +1,7 @@
 import { DynamoDB } from "aws-sdk";
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda";
 import { MissingFieldError, validateSpaceEntry } from '../Shared/InputValidator'
-import { generateRandomId, getEventBody } from '../Shared/Utils'
+import { generateRandomId, getEventBody, addCorsHeader } from '../Shared/Utils'
 
 const dbClient = new DynamoDB.DocumentClient();
 const TABLE_NAME = process.env.TABLE_NAME
@@ -15,6 +15,8 @@ async function handler(
         body: 'Salut! Bonjour from Dynamodb'
     }
 
+    addCorsHeader(result)
+
     try {
         const item = getEventBody(event);
         item.spaceId = generateRandomId();
@@ -24,7 +26,9 @@ async function handler(
             TableName: TABLE_NAME!,
             Item: item
         }).promise()
-        result.body = JSON.stringify(`New item created with id: ${item.spaceId}`)
+        result.body = JSON.stringify({
+            id: item.spaceId
+        })
     } catch (e: unknown) {
         const error = e as Error;
 
