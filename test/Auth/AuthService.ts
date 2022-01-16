@@ -19,8 +19,8 @@ Amplify.configure({
 
 export class AuthService {
 
-    public async login(userName: string, password: string) {
-        const user = await Auth.signIn(userName, password) as CognitoUser;
+    public async login(emailAddress: string, password: string) {
+        const user = await Auth.signIn(emailAddress, password) as CognitoUser;
         return user;
     }
 

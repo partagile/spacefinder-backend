@@ -2,6 +2,19 @@ import { AuthService } from './AuthService';
 import { config } from './config';
 import * as AWS from 'aws-sdk';
 
+AWS.config.region = config.REGION;
+
+async function getBuckets(){
+    let buckets;
+
+    try {
+        buckets = await new AWS.S3().listBuckets().promise();
+    } catch (error) {
+        buckets = undefined
+    }
+    return buckets;
+}
+
 
 async function callCognitoAuths(){
     const authService = new AuthService();
@@ -9,6 +22,7 @@ async function callCognitoAuths(){
 
     await authService.getAWSTemporaryCreds(user);
     const someCreds = AWS.config.credentials;
+    const buckets = await getBuckets();
     console.log('for debug breakpoint');
 }
 
