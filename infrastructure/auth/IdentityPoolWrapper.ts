@@ -96,7 +96,7 @@ export class IdentityPoolWrapper {
                 's3:PutObject',
                 's3:PutObjectAcl'
             ],
-            resources: ['this.photoBucketArn']            
+            resources: [this.photoBucketArn]            
             
         }))
     }
