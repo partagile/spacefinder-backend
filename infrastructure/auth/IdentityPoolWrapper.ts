@@ -59,7 +59,6 @@ export class IdentityPoolWrapper {
             },
                 'sts:AssumeRoleWithWebIdentity'
             )
-
         });
 
         this.unauthenticatedRole = new Role(this.scope, 'CognitoDefaultUnAuthenticatedRole', {
@@ -73,8 +72,7 @@ export class IdentityPoolWrapper {
             },
                 'sts:AssumeRoleWithWebIdentity'
             )
-
-        });    
+        }); 
         
         this.adminRole = new Role(this.scope, 'CognitoAdminRole', {
             assumedBy: new FederatedPrincipal('cognito-identity.amazonaws.com', {
@@ -82,13 +80,12 @@ export class IdentityPoolWrapper {
                     'cognito-identity.amazonaws.com:aud': this.identityPool.ref
                 },
                 'ForAnyValue:StringLike': {
-                    'cognito-identity.amazonaws.com:aud': 'authenticated'
+                    'cognito-identity.amazonaws.com:amr': 'authenticated'
                 }
             },
                 'sts:AssumeRoleWithWebIdentity'
             )
-
-        }); 
+        });
         
         this.adminRole.addToPolicy(new PolicyStatement({
             effect: Effect.ALLOW,
