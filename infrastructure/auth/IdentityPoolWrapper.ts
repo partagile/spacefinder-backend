@@ -54,7 +54,7 @@ export class IdentityPoolWrapper {
                     'cognito-identity.amazonaws.com:aud': this.identityPool.ref
                 },
                 'ForAnyValue:StringLike': {
-                    'cognito-identity.amazonaws.com:aud': 'authenticated'
+                    'cognito-identity.amazonaws.com:amr': 'authenticated'
                 }
             },
                 'sts:AssumeRoleWithWebIdentity'
@@ -68,7 +68,7 @@ export class IdentityPoolWrapper {
                     'cognito-identity.amazonaws.com:aud': this.identityPool.ref
                 },
                 'ForAnyValue:StringLike': {
-                    'cognito-identity.amazonaws.com:aud': 'unauthenticated'
+                    'cognito-identity.amazonaws.com:amr': 'unauthenticated'
                 }
             },
                 'sts:AssumeRoleWithWebIdentity'
