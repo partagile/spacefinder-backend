@@ -1,6 +1,6 @@
 import { CfnOutput, Fn, Stack, StackProps } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
-import {  AuthorizationType, MethodOptions, RestApi } from 'aws-cdk-lib/aws-apigateway'
+import {  AuthorizationType, Cors, MethodOptions, ResourceOptions, RestApi } from 'aws-cdk-lib/aws-apigateway'
 import { GenericTable } from './GenericTable'
 import { AuthorizerWrapper } from './auth/AuthorizerWrapper'
 import { Bucket, HttpMethods } from 'aws-cdk-lib/aws-s3'
@@ -39,13 +39,20 @@ export class SpaceStack extends Stack {
                 authorizerId: this.authorizer.authorizer.authorizerId
             }
         }
+
+        const optionsWithCors:ResourceOptions = {
+            defaultCorsPreflightOptions : {
+                allowOrigins: Cors.ALL_ORIGINS,
+                allowMethods: Cors.ALL_METHODS
+            }
+        } 
         
         //spaces API integrations
-        const spaceResource = this.api.root.addResource('spaces');
-        spaceResource.addMethod('POST', this.spacesTable.createLambdaIntegration);
+        const spaceResource = this.api.root.addResource('spaces', optionsWithCors);
+        spaceResource.addMethod('POST', this.spacesTable.createLambdaIntegration, optionsAuthorizer);
         spaceResource.addMethod('GET', this.spacesTable.readLambdaIntegration, optionsAuthorizer );
-        spaceResource.addMethod('PUT', this.spacesTable.updateLambdaIntegration);
-        spaceResource.addMethod('DELETE', this.spacesTable.deleteLambdaIntegration);
+        spaceResource.addMethod('PUT', this.spacesTable.updateLambdaIntegration, optionsAuthorizer);
+        spaceResource.addMethod('DELETE', this.spacesTable.deleteLambdaIntegration, optionsAuthorizer);
     }
 
     private initializeSuffix(){
