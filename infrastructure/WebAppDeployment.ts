@@ -38,7 +38,7 @@ export class WebAppDeployment {
                 ]
             }
         );
-        new CfnOutput(this.stack, 'WebAppS3Url', {
+        new CfnOutput(this.stack, 'AppS3DistributionUrl', {
             value: this.deploymentBucket.bucketWebsiteUrl
         });
 
@@ -59,7 +59,7 @@ export class WebAppDeployment {
                 ]
             }
         );
-        new CfnOutput(this.stack, 'WebAppCloudFrontUrl', {
+        new CfnOutput(this.stack, 'AppCloudFrontUrl', {
             value: cloudFront.distributionDomainName
         })
 
