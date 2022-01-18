@@ -4,6 +4,7 @@ import {  AuthorizationType, Cors, MethodOptions, ResourceOptions, RestApi } fro
 import { GenericTable } from './GenericTable'
 import { AuthorizerWrapper } from './auth/AuthorizerWrapper'
 import { Bucket, HttpMethods } from 'aws-cdk-lib/aws-s3'
+import { WebAppDeployment } from './WebAppDeployment'
 
 export class SpaceStack extends Stack {
 
@@ -32,6 +33,8 @@ export class SpaceStack extends Stack {
             this, 
             this.api,
             this.photosBucket.bucketArn + '/*');
+
+        new WebAppDeployment(this, this.suffix);
 
         const optionsAuthorizer: MethodOptions = {
             authorizationType: AuthorizationType.COGNITO,
@@ -63,8 +66,8 @@ export class SpaceStack extends Stack {
     }
 
     private initializeSpacesPhotosBucket(){
-        this.photosBucket = new Bucket(this, 'spaces-photos', {
-            bucketName: 'spaces-photos-' + this.suffix,
+        this.photosBucket = new Bucket(this, 'spacefinderz-photos', {
+            bucketName: 'spacefinderz-photos-' + this.suffix,
             cors: [{
                 allowedMethods: [
                     HttpMethods.HEAD,
@@ -75,7 +78,7 @@ export class SpaceStack extends Stack {
                 allowedHeaders: ['*']
             }]
         });
-        new CfnOutput (this, 'spaces-photos-bucket-name', {
+        new CfnOutput (this, 'PhotosBucketName', {
             value: this.photosBucket.bucketName
         })
     }

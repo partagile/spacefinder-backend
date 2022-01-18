@@ -1,7 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 
 
-
 export function generateRandomId(): string {
     return Math.random().toString(36).slice(2);
 }
@@ -12,8 +11,8 @@ export function getEventBody(event: APIGatewayProxyEvent) {
 
 export function addCorsHeader(result: APIGatewayProxyResult) {
     result.headers = {
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "*"
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*'
     }
 }
