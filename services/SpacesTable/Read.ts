@@ -15,31 +15,19 @@ async function handler(
         body: ''
     }
     addCorsHeader(result);
-
-    if (isAuthorized(event)) {
-        try {
-            if (event.queryStringParameters) {
-                if (PRIMARY_KEY! in event.queryStringParameters) {
-                    result.body = await queryWithPrimaryPartitionKey(event.queryStringParameters)
-                }
-                else {
-                    result.body = await queryWithSecondaryPartitionKey(event.queryStringParameters);
-                }
+    try {
+        if (event.queryStringParameters) {
+            if (PRIMARY_KEY! in event.queryStringParameters) {
+                result.body = await queryWithPrimaryPartitionKey(event.queryStringParameters)
             } else {
-                result.body = await scanTable();
+                result.body = await queryWithSecondaryPartitionKey(event.queryStringParameters);
             }
-    
-        } catch (error) {
-            result.body = error.message;
+        } else {
+            result.body = await scanTable();
         }
-    } else {
-        return {
-            statusCode: 401,
-            body: JSON.stringify('Unauthorized')
-        }
+    } catch (error) {
+        result.body = error.message;
     }
-
-
     return result
 }
 
