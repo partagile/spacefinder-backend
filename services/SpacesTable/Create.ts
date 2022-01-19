@@ -3,8 +3,8 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from "aws-lambda
 import { MissingFieldError, validateSpaceEntry } from '../Shared/InputValidator'
 import { generateRandomId, getEventBody, addCorsHeader } from '../Shared/Utils'
 
-const dbClient = new DynamoDB.DocumentClient();
 const TABLE_NAME = process.env.TABLE_NAME
+const dbClient = new DynamoDB.DocumentClient();
 
 async function handler(
     event: APIGatewayProxyEvent,
@@ -12,9 +12,8 @@ async function handler(
 ): Promise<APIGatewayProxyResult> {
     const result: APIGatewayProxyResult = {
         statusCode: 200,
-        body: 'Salut! Bonjour from Dynamodb'
+        body: ''
     }
-
     addCorsHeader(result)
 
     try {
@@ -29,9 +28,7 @@ async function handler(
         result.body = JSON.stringify({
             id: item.spaceId
         })
-    } catch (e: unknown) {
-        const error = e as Error;
-
+    } catch (error) {
         if (error instanceof MissingFieldError) {
             result.statusCode = 403
         } else {
