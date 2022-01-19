@@ -8,11 +8,18 @@ import { Credentials } from 'aws-sdk/lib/credentials';
 
 Amplify.configure({
     Auth: {
-        mandatorySignIn: false,
-        region: config.REGION,
-        userPoolId: config.USER_POOL_ID,
-        userPoolWebClientId: config.APP_CLIENT_ID,
+        // REQUIRED only for Federated Authentication - Amazon Cognito Identity Pool ID
         identityPoolId: config.IDENTITY_POOL_ID,
+        // REQUIRED - Amazon Cognito Region
+        region: config.REGION,
+        
+        // OPTIONAL - Enforce user authentication prior to accessing AWS resources or not
+        mandatorySignIn: false,
+        // OPTIONAL - Amazon Cognito User Pool ID
+        userPoolId: config.USER_POOL_ID,
+        // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+        userPoolWebClientId: config.APP_CLIENT_ID,
+        // OPTIONAL - Manually set the authentication flow type. Default is 'USER_SRP_AUTH'
         authenticationFlowType: 'USER_PASSWORD_AUTH'
     }
 })
