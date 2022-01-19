@@ -72,7 +72,9 @@ export class SpaceStack extends Stack {
                 allowedMethods: [
                     HttpMethods.HEAD,
                     HttpMethods.PUT,
-                    HttpMethods.GET
+                    HttpMethods.GET,
+                    HttpMethods.POST,
+                    HttpMethods.DELETE
                 ],
                 allowedOrigins: ['*'],
                 allowedHeaders: ['*']
