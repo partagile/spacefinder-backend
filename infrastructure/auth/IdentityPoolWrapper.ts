@@ -2,8 +2,6 @@ import { CfnOutput } from "aws-cdk-lib";
 import { UserPool, UserPoolClient, CfnIdentityPool, CfnIdentityPoolRoleAttachment } from "aws-cdk-lib/aws-cognito";
 import { Effect, FederatedPrincipal, PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
-import { config } from "process";
-
 
 
 export class IdentityPoolWrapper {

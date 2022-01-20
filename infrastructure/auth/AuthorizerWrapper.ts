@@ -1,7 +1,6 @@
 import { CfnOutput } from "aws-cdk-lib";
 import { CognitoUserPoolsAuthorizer, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { UserPool, UserPoolClient, CfnUserPoolGroup } from "aws-cdk-lib/aws-cognito";
-import { Bucket } from "aws-cdk-lib/aws-s3";
 import { Construct } from "constructs";
 import { IdentityPoolWrapper } from './IdentityPoolWrapper'
 
